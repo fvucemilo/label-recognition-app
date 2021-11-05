@@ -7,9 +7,6 @@ import model
 app = Flask(__name__, template_folder='Template')
 Bootstrap(app)
 
-"""
-Routes
-"""
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'POST':
