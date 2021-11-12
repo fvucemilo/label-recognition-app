@@ -2,4 +2,11 @@
 
 {% block title %}Label-recognition-app{% endblock %}
 
+{% block html_attribs %} lang="en"{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='css/style.css')}}">
+{% endblock %}
+
 {% block content %}{% endblock %}
