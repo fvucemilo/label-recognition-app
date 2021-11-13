@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  {% if result.data.name is defined %}
+    <h1>Naziv: {{ result.data.name }}</h1>
+    <h1>Godina proizvodnje: {{ result.data.production_year }}</h1>
+    <h1>Proizođač: {{ result.data.manufacturer }}</h1>
+    <h1>Klasa: {{ result.data.class_name }}</h1>
+  {% else %}
+    <h1 class="text-danger">Nema rezultata pretrage u bazi</h1>
+  {% endif %}
+  <a href="{{ url_for('create_wine') }}" class="btn btn-default">Povratak</a>
+</div>
+{% endblock %}

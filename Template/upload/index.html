@@ -5,21 +5,21 @@
   <hr />
   <div class="row align-items-center justify-content-center">
     <div class="col">
-      <form action="{{ url_for('upload') }}" method="post">
         {% for image_path in result.image_path %}
-        <div class="show-image">
-          <img
-            src="{{ url_for('static', filename=image_path) }}"
-            class="img-rounded"
-            alt="{{hist}}"
-            width="200"
-            height="200"
-          />
-          <input type="hidden" name="image" value="{{image_path}}" />
-          <input class="delete btn btn-danger" type="submit" value="Delete" />
-        </div>
+        <form action="{{ url_for('upload') }}" method="post">
+          <div class="show-image">
+            <img
+              src="{{ url_for('static', filename=image_path) }}"
+              class="img-rounded"
+              alt="{{ image_path }}"
+              width="200"
+              height="200"
+            />
+            <input type="hidden" name="image" value="{{image_path}}" />
+            <input class="delete btn btn-danger" type="submit" value="Delete" />
+          </div>
+        </form>
         {% endfor %}
-      </form>
     </div>
   </div>
   <a href="{{ url_for('index') }}" class="btn btn-default">Povratak</a>

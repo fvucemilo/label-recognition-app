@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import redirect
 
 import model
 
@@ -66,27 +67,74 @@ def index():
 @app.route('/wine', methods=['GET','POST'])
 def create_wine():
     if request.method == 'POST':
-        name = request.form['name']
-        production_year = request.form['production_year']
-        manufacturer = request.form['manufacturer']
-        class_name = request.form['class_name']
-        if db.session.query(Wine).filter(Wine.class_name == class_name).count() == 0:
-            new_data = Wine(name, production_year, manufacturer, class_name)
-            db.session.add(new_data)
-            db.session.commit()
+        name = request.form.get('name', '')
+        production_year = request.form.get('production_year', '')
+        manufacturer = request.form.get('manufacturer', '')
+        class_name = request.form.get('class_name', '')
+        if name != '' or production_year != '' or manufacturer != '' or class_name != '':
+            if db.session.query(Wine).filter(Wine.class_name == class_name).count() == 0:
+                new_data = Wine(name, production_year, manufacturer, class_name)
+                db.session.add(new_data)
+                db.session.commit()
     data = db.session.query(Wine).all()
     result = {
         'data': data
     }
     return render_template('wine/create.html', result = result)
 
+@app.route('/wine/<int:id>', methods=['GET'])
+def details_wine(id):
+    if id:
+        if db.session.query(Wine).filter(Wine.id == id).count() != 0:
+            data = db.session.query(Wine).get(id)
+            result = {
+                'data': data
+            }
+            return render_template('wine/details.html', result = result)
+    return redirect(url_for('create_wine'))
+
+@app.route('/wine/edit/<int:id>', methods=['GET','POST'])
+def edit_wine(id):
+    if request.method == 'POST' and id:
+        name = request.form.get('name', '')
+        production_year = request.form.get('production_year', '')
+        manufacturer = request.form.get('manufacturer', '')
+        class_name = request.form.get('class_name', '')
+        if name != '' or production_year != '' or manufacturer != '' or class_name != '':
+            if db.session.query(Wine).filter(Wine.id == id).count() != 0:
+                edit_data = db.session.query(Wine).filter(Wine.id == id).one()
+                edit_data.name = name
+                edit_data.production_year = production_year
+                edit_data.manufacturer = manufacturer
+                edit_data.class_name = class_name
+                db.session.commit()
+                return redirect(url_for('edit_wine', id=id))
+        return redirect(url_for('create_wine'))
+    if id:
+        if db.session.query(Wine).filter(Wine.id == id).count() != 0:
+            data = db.session.query(Wine).get(id)
+            result = {
+                'data': data
+            }
+            return render_template('wine/update.html', result = result)
+    return redirect(url_for('create_wine'))
+
+@app.route('/wine/<int:id>', methods=['POST'])
+def delete_wine(id):
+    if request.method == 'POST' and id:
+        if db.session.query(Wine).filter(Wine.id == id).count() != 0:
+            db.session.query(Wine).filter(Wine.id == id).delete()
+            db.session.commit()
+    return redirect(url_for('create_wine'))
+
 @app.route('/upload', methods=['GET','POST'])
 def upload():
     if request.method == 'POST':
         image = request.form['image']
         if image != '':
-            image = os.path.join('static', image)
-            os.remove(image)
+            image = os.path.join('static/', image)
+            if os.path.isfile(image):
+                os.remove(image)
     image_path = os.listdir('static/upload')
     image_path = ['upload/' + file for file in image_path]
     result = {

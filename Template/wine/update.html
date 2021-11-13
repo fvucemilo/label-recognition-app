@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row align-items-center justify-content-center">
+    <div class="col">
+      <h1 class="text-center">Aržuriraj vino</h1>
+      <hr />
+      <form
+        class="form-inline"
+        action="{{ url_for('edit_wine', id=result.data.id) }}"
+        method="post"
+      >
+        <div class="form-group">
+          <label for="input-name">Naziv</label>
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            id="input-name"
+            placeholder="Naziv"
+            value="{{ result.data.name }}"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="input-production-year">Godina proizvodnje</label>
+          <input
+            type="text"
+            name="production_year"
+            class="form-control"
+            id="input-production-year"
+            placeholder="Godina proizvodnje"
+            value="{{ result.data.production_year }}"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="input-manufacturer">Proizvođač</label>
+          <input
+            type="text"
+            name="manufacturer"
+            class="form-control"
+            id="input-manufacturer"
+            placeholder="Proizvođač"
+            value="{{ result.data.manufacturer }}"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="input-class-name">Klasa</label>
+          <input
+            type="text"
+            name="class_name"
+            class="form-control"
+            id="input-class-name"
+            placeholder="Klasa"
+            value="{{ result.data.class_name }}"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Unesi" class="btn btn-default" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <br>
+  <hr>
+  <a href="{{ url_for('create_wine') }}" class="btn btn-default">Povratak</a>
+</div>
+{% endblock %}
